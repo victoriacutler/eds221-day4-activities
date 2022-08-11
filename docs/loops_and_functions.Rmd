@@ -1,0 +1,100 @@
+---
+title: "Loops and Functions"
+author: "Victoria Cutler"
+date: "2022-08-11"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+library(tidyverse)
+```
+
+### Part 1
+
+Task 1
+
+```{r}
+weekdays <- c("Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday")
+transects <- c("Transect A", "Transect B", "Transect C")
+
+matrix_day_trans <- matrix(nrow = length(weekdays), ncol = length(transects))
+
+for (i in seq_along(transects)) {
+for (j in seq_along(weekdays)) {
+  dayofweek_dash_transect <- paste(weekdays[j], "-", transects[i])
+  matrix_day_trans[j,i] <- dayofweek_dash_transect
+}
+}
+```
+
+### Task 2
+
+```{r}
+force <- function(m, a) {
+  F <- m * a
+  print(paste("The resulting force is", F, "Newtons"))
+}
+
+force(2,4)
+```
+
+### Task 3
+
+```{r}
+
+fish_parms <- tribble(
+  ~"sci_name", ~"common_name", ~"a_est", ~"b_est",
+  "Chanos chanos", "Milkfish", 0.0905, 2.52,
+  "Sphyraena barracuda", "Great barracuda", 0.0181, 3.27,
+  "Caranx ignobilis", "Giant trevally", 0.0353, 3.05
+)
+
+fish_weight <- function(fish_name, total_length) {
+  a <- (fish_parms |> filter(fish_name == common_name))$a_est
+  b <- (fish_parms |> filter(fish_name == common_name))$b_est
+  expected_weight <- a * total_length^b
+  print(expected_weight)
+}
+
+fish_weight(fish_name = "Milkfish", total_length = 10) # tested that  0.0905* (10^2.52) is the same thing
+
+length_vec <- seq(from = 0, to = 100, by = 1)
+
+milkfish_weights <- vector(mode = "numeric", length = length(length_vec))
+
+milkfish_weights <- fish_weight("Milkfish", length_vec)
+```
+
+### Task 4
+
+```{r}
+wave_power <- function(height, period) {
+  power <- 0.5 * height^2 * period
+  print(power)
+}
+
+height_vect <- seq(from = 0, to = 3, by = 0.2)
+
+wave_power(height_vect, 8) # test for the second iteration: 0.5 * .2^2 * 8
+```
+
+### Task 5
+
+```{r}
+
+wave_power_shallow_or_deep <- function(height, period, depth) {
+  if (depth > 12) {
+    power <- 0.5 * height^2 * period
+    message("the deep water equation was used!")
+    } 
+  if (depth <= 12) {
+    power <- 0.81 * height^2 * period
+    message("the shallow water equation was used!")
+    }
+    print(power)
+}
+
+wave_power_shallow_or_deep(height = 10, period = 5, depth = 20) # test 0.5 * 10^2 * 5 worked!
+```
